@@ -1,14 +1,17 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
-using AndroidX.AppCompat.Widget;
+using Android.Widget;
 using AndroidX.AppCompat.App;
 using Google.Android.Material.FloatingActionButton;
 using Google.Android.Material.Snackbar;
-using Android.Widget;
-using Android.Graphics.Drawables;
+using System;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace AppHotel
 {
@@ -16,11 +19,14 @@ namespace AppHotel
     public class MainActivity : AppCompatActivity
     {
         ImageView imgLogo, imgUser, imgPassword;
-        EditText edtUser, edtPassword;
+        EditText  edtUser, edtPassword;
+        Button    btnLogin;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+
             SetContentView(Resource.Layout.activity_main);
 
             // Relacionar os elementos da ACT
@@ -29,44 +35,97 @@ namespace AppHotel
             imgPassword = FindViewById<ImageView>(Resource.Id.imgPassword);
             edtUser     = FindViewById<EditText> (Resource.Id.edtUser);
             edtPassword = FindViewById<EditText> (Resource.Id.edtPassword);
+            btnLogin    = FindViewById<Button>   (Resource.Id.btnLogin);
 
-            imgLogo.SetImageResource(Resource.Drawable.logo);
-            imgUser.SetImageResource(Resource.Drawable.usuarios);
+            // Define as imagens da tela login
+            imgLogo.SetImageResource    (Resource.Drawable.logo);
+            imgUser.SetImageResource    (Resource.Drawable.usuarios);
             imgPassword.SetImageResource(Resource.Drawable.senha);
 
-            FloatingActionButton fab = FindViewById<FloatingActionButton>(Resource.Id.fab);
-            fab.Click += FabOnClick;
+            // Valida as informações dos campos e realiza o login
+            btnLogin.Click += BtnLogin_Click;
         }
 
-        public override bool OnCreateOptionsMenu(IMenu menu)
+        /// <summary>
+        /// Realiza as validações necessárias para entrar na aplicação
+        /// Chama a tela do Menu Principal.
+        /// </summary>
+        private async void BtnLogin_Click(object sender, EventArgs e)
         {
-            MenuInflater.Inflate(Resource.Menu.menu_main, menu);
-            return true;
-        }
+            // Desabilita o botão de login
+            btnLogin.Enabled = false;
 
-        public override bool OnOptionsItemSelected(IMenuItem item)
-        {
-            int id = item.ItemId;
-            if (id == Resource.Id.action_settings)
+            edtUser.Text     = edtUser.Text.ToString().Trim();
+            edtPassword.Text = edtPassword.Text.ToString().Trim();
+
+            // Verifica se possui valor no campo de usuário
+            if (edtUser.Text == string.Empty)
             {
-                return true;
+                Toast.MakeText(Application.Context, "Usuário deve ser informado!", ToastLength.Long).Show();
+                edtUser.RequestFocus();
+                return;
             }
 
-            return base.OnOptionsItemSelected(item);
+            // Verifica se possui valor no campo de senha
+            if (edtPassword.Text == string.Empty)
+            {
+                Toast.MakeText(Application.Context, "Senha deve ser informada!", ToastLength.Long).Show();
+                edtPassword.RequestFocus();
+                return;
+            }
+
+            // Instancia um LoginService
+            LoginService login = new LoginService();
+
+            // Realiza a requisição de login e obtém o retorno
+            HttpResponseMessage httpResponse = await login.AuthenticateUser(edtUser.Text, edtPassword.Text);
+
+            // Desserializa a resposta da API
+            LoginResponse loginResponse = await DeserializeJsonContentAsync<LoginResponse>(httpResponse);
+
+            // Verifica se há algum na resposta da requisição
+            if (loginResponse.Erro == null)
+            {
+                // Chama o layout do menu principal da aplicação
+                StartActivity(typeof(MenuPrincipal));
+            }
+            else
+            {
+                // Informa o erro ocorrido para o usuário
+                Toast.MakeText(Application.Context, loginResponse.Erro, ToastLength.Long).Show();
+            }
+
+            // Reativa o botão de login
+            btnLogin.Enabled = true;
+
+            // Limpa os campos da tela de login
+            Limpar();
         }
 
-        private void FabOnClick(object sender, EventArgs eventArgs)
+        /// <summary>
+        /// Método responsável por limpar os campos da tela de login
+        /// </summary>
+        private void Limpar()
         {
-            View view = (View) sender;
-            Snackbar.Make(view, "Não tem nada aqui! :)", Snackbar.LengthLong)
-                .SetAction("Action", (View.IOnClickListener)null).Show();
+            edtUser.Text     = string.Empty;
+            edtPassword.Text = string.Empty;
+
+            edtUser.RequestFocus();
         }
 
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        /// <summary>
+        /// Método responsável por desserializar a resposta da requisição.
+        /// </summary>
+        /// <param name="response">Objeto que será desserializado</param>
+        /// <returns>Retorna um objeto Json desserializado</returns>
+        public async Task<LoginResponse> DeserializeJsonContentAsync<LoginResponse>(HttpResponseMessage response)
         {
-            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            string jsonContent   = await response.Content.ReadAsStringAsync();
 
-            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            LoginResponse result = JsonConvert.DeserializeObject<LoginResponse>(jsonContent);
+
+            return result;
         }
-	}
+
+    }
 }
