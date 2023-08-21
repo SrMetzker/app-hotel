@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Net.Http;
+using Android.Content;
 
 namespace AppHotel
 {
@@ -62,7 +63,12 @@ namespace AppHotel
             if (edtUser.Text == string.Empty)
             {
                 Toast.MakeText(Application.Context, "Usuário deve ser informado!", ToastLength.Long).Show();
+
                 edtUser.RequestFocus();
+
+                // Reativa o botão de login
+                btnLogin.Enabled = true;
+
                 return;
             }
 
@@ -70,24 +76,34 @@ namespace AppHotel
             if (edtPassword.Text == string.Empty)
             {
                 Toast.MakeText(Application.Context, "Senha deve ser informada!", ToastLength.Long).Show();
+
                 edtPassword.RequestFocus();
+
+                // Reativa o botão de login
+                btnLogin.Enabled = true;
+
                 return;
             }
 
             // Instancia um LoginService
-            LoginService login = new LoginService();
+            Authentication auth = new Authentication();
 
             // Realiza a requisição de login e obtém o retorno
-            HttpResponseMessage httpResponse = await login.AuthenticateUser(edtUser.Text, edtPassword.Text);
-
-            // Desserializa a resposta da API
-            LoginResponse loginResponse = await DeserializeJsonContentAsync<LoginResponse>(httpResponse);
+            LoginResponse loginResponse = await auth.AuthenticateUser(edtUser.Text, edtPassword.Text);
 
             // Verifica se há algum na resposta da requisição
             if (loginResponse.Erro == null)
             {
+                var menu = new Intent(this, typeof(MenuPrincipal));
+
+                menu.PutExtra("name", loginResponse.Nome);
+                menu.PutExtra("position", loginResponse.Cargo);
+
                 // Chama o layout do menu principal da aplicação
-                StartActivity(typeof(MenuPrincipal));
+                StartActivity(menu);
+
+                // Limpa os campos da tela de login
+                Limpar();
             }
             else
             {
@@ -97,9 +113,6 @@ namespace AppHotel
 
             // Reativa o botão de login
             btnLogin.Enabled = true;
-
-            // Limpa os campos da tela de login
-            Limpar();
         }
 
         /// <summary>
@@ -111,20 +124,6 @@ namespace AppHotel
             edtPassword.Text = string.Empty;
 
             edtUser.RequestFocus();
-        }
-
-        /// <summary>
-        /// Método responsável por desserializar a resposta da requisição.
-        /// </summary>
-        /// <param name="response">Objeto que será desserializado</param>
-        /// <returns>Retorna um objeto Json desserializado</returns>
-        public async Task<LoginResponse> DeserializeJsonContentAsync<LoginResponse>(HttpResponseMessage response)
-        {
-            string jsonContent   = await response.Content.ReadAsStringAsync();
-
-            LoginResponse result = JsonConvert.DeserializeObject<LoginResponse>(jsonContent);
-
-            return result;
         }
 
     }

@@ -3,5 +3,185 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="53.5dp"
+        android:id="@+id/layoutUser"
+        android:background="@color/browser_actions_bg_grey">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout1">
+            <ImageView
+                android:src="@android:drawable/ic_menu_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/imgUser"
+                android:contentDescription="@string/movimentacoes" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/linearLayout2"
+                android:gravity="right"
+                android:layout_marginRight="15px">
+                <TextView
+                    android:text="@string/user_name"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvUser"
+                    android:layout_marginTop="10px"
+                    android:textStyle="bold" />
+                <TextView
+                    android:text="@string/user_position"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvPosition"
+                    android:layout_marginTop="5px" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <ScrollView
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView1"
+        android:layout_gravity="center_horizontal">
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout4">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:id="@+id/layoutButtons"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="30px">
+                <ImageButton
+                    android:src="@android:drawable/ic_menu_gallery"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:id="@+id/imgBtnGastos"
+                    android:scaleType="fitXY"
+                    android:contentDescription="@string/description" />
+                <ImageButton
+                    android:src="@android:drawable/ic_menu_gallery"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:id="@+id/imgBtnMoviment"
+                    android:scaleType="fitXY"
+                    android:contentDescription="@string/description" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:id="@+id/layoutButtons2"
+                android:gravity="center_horizontal">
+                <ImageButton
+                    android:src="@android:drawable/ic_menu_gallery"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:id="@+id/imgBtnCheckIn"
+                    android:scaleType="fitXY"
+                    android:contentDescription="@string/description" />
+                <ImageButton
+                    android:src="@android:drawable/ic_menu_gallery"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:id="@+id/imgBtnReservas"
+                    android:scaleType="fitXY"
+                    android:contentDescription="@string/description" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layout3"
+        android:gravity="bottom">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/layoutFooter"
+            android:background="@color/browser_actions_bg_grey">
+            <ImageView
+                android:src="@android:drawable/ic_menu_gallery"
+                android:layout_width="55.0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/imgMov"
+                android:contentDescription="@string/description"
+                android:layout_marginHorizontal="20px"
+                android:layout_marginVertical="10px" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/linearLayout3"
+                android:gravity="center_vertical"
+                android:layout_marginHorizontal="5px">
+                <TextView
+                    android:text="@string/currency"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvInput"
+                    android:textColor="@android:color/holo_green_light"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"
+                    android:layout_marginVertical="5px" />
+                <TextView
+                    android:text="@string/currency"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvOutput"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"
+                    android:layout_marginVertical="5px" />
+            </LinearLayout>
+            <TextView
+                android:text="@string/currency"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/tvBalance"
+                android:textColor="@android:color/holo_green_light"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical|top|bottom|left|right|fill_vertical|center_horizontal|center|fill_horizontal|fill|clip_vertical|clip_horizontal|start|end"
+                android:gravity="center_vertical|right"
+                android:layout_marginLeft="30px"
+                android:layout_marginRight="20px" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
